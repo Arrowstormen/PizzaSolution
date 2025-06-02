@@ -25,7 +25,7 @@ public class MenuService : IMenuService
              new MenuItem ("The Kiddy Pool", Models.Types.PizzaRecipeType.StandardPizza, 75.00 ),
              new MenuItem ("The Vegan Kiddy Pool", Models.Types.PizzaRecipeType.StandardPizza, 70.00 ),
         };
-            var lunchMenu = new Menu("Standard Menu", lunchMenuItems);
+            var lunchMenu = new Menu("Lunch Menu", lunchMenuItems);
             return lunchMenu;
         }
         else
