@@ -1,4 +1,6 @@
-﻿namespace PizzaPlace.Services;
+﻿using PizzaPlace.Models;
+
+namespace PizzaPlace.Services;
 
 public interface IMenuService
 {
