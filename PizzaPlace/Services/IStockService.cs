@@ -7,4 +7,6 @@ public interface IStockService
     Task<bool> HasInsufficientStock(PizzaOrder order, ComparableList<PizzaRecipeDto> recipeDtos);
 
     Task<ComparableList<StockDto>> GetStock(PizzaOrder order, ComparableList<PizzaRecipeDto> recipeDtos);
+
+    Task<ComparableList<StockDto>> Restock(ComparableList<StockDto> stock);
 }

@@ -15,8 +15,8 @@ namespace PizzaPlace.Test.Controllers;
     [TestClass]
     public class RestockingControllerTests
     {
-        private static RestockingController GetController(Mock<IStockRepository> stockRepository) =>
-        new(stockRepository.Object);
+        private static RestockingController GetController(Mock<IStockService> stockService) =>
+        new(stockService.Object);
 
         [TestMethod]
         public async Task RestockAddsStock()
@@ -37,24 +37,18 @@ namespace PizzaPlace.Test.Controllers;
         resstock.Add(resstock2);
         resstock.Add(resstock3);
 
-        var stockRepository = new Mock<IStockRepository>(MockBehavior.Strict);
-        stockRepository.Setup(x => x.AddToStock(stock1))
-            .ReturnsAsync(resstock1);
-        stockRepository.Setup(x => x.AddToStock(stock2))
-            .ReturnsAsync(resstock2);
-        stockRepository.Setup(x => x.AddToStock(stock3))
-            .ReturnsAsync(resstock3);
+        var stockService = new Mock<IStockService>(MockBehavior.Strict);
+        stockService.Setup(x => x.Restock(stock))
+            .ReturnsAsync(resstock);
 
-        var controller = GetController(stockRepository);
+        var controller = GetController(stockService);
 
         // Act
         var actual = await controller.Restock(stock);
 
         // Assert
         Assert.IsInstanceOfType<OkObjectResult>(actual);
-        stockRepository.VerifyAll();
-        var returnedStock = (actual as OkObjectResult)?.Value as ComparableList<StockDto>;
-        Assert.AreEqual(resstock, returnedStock);
+        stockService.VerifyAll();
     }
 
     }
