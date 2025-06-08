@@ -15,7 +15,7 @@ public class AssemblyLinePizzaOven(TimeProvider timeProvider) : PizzaOven(timePr
     public const int SubsequentPizzaTimeSavingsInMinutes = 5;
     public const int MinimumCookingTimeMinutes = 4;
 
-    public PizzaRecipeType currentPizzaType;
+    public PizzaRecipeType? currentPizzaType = null;
     public int previouslyAssembled = 0;
 
     protected override int Capacity => AssemblyLineCapacity;
@@ -32,7 +32,7 @@ public class AssemblyLinePizzaOven(TimeProvider timeProvider) : PizzaOven(timePr
     {
         if (currentPizzaType == recipe.RecipeType)
         {
-            var savings = SubsequentPizzaTimeSavingsInMinutes * previouslyAssembled + recipe.CookingTimeMinutes;
+            var savings = (recipe.CookingTimeMinutes + SetupTimeMinutes) - (SubsequentPizzaTimeSavingsInMinutes * previouslyAssembled);
             if (MinimumCookingTimeMinutes > savings)
             {
                 await CookPizza(MinimumCookingTimeMinutes);
