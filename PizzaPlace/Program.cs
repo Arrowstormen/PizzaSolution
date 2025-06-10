@@ -1,7 +1,11 @@
+using Microsoft.Data.Sqlite;
 using PizzaPlace;
+using PizzaPlace.Data;
 using PizzaPlace.Factories;
 using PizzaPlace.Repositories;
 using PizzaPlace.Services;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,12 @@ builder.Services.AddOpenApiDocument(d =>
     d.Title = "Pizza Place";
     d.Version = "v1";
 });
+
+builder.Services.AddDbContext<PizzaContext>();
+using (var context = new PizzaContext())
+{
+    context.Database.EnsureCreated();
+}
 
 // Register services:
 var services = builder.Services;
