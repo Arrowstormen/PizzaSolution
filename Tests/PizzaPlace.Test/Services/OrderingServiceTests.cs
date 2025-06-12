@@ -9,8 +9,8 @@ namespace PizzaPlace.Test.Services;
 [TestClass]
 public class OrderingServiceTests
 {
-    private static OrderingService GetService(IStockService stockService, IRecipeService recipeService, IPizzaOven pizzaOven) =>
-        new OrderingService(stockService, recipeService, pizzaOven);
+    private static OrderingService GetService(IStockService stockService, IRecipeService recipeService, IMenuService menuService, IPizzaOven pizzaOven) =>
+        new OrderingService(stockService, recipeService, menuService, pizzaOven);
 
     [TestMethod]
     public async Task HandlePizzaOrder()
@@ -49,6 +49,7 @@ public class OrderingServiceTests
 
         var stockService = new Mock<IStockService>(MockBehavior.Strict);
         var recipeService = new Mock<IRecipeService>(MockBehavior.Strict);
+        var menuService = new Mock<IMenuService>(MockBehavior.Strict);
         var pizzaOven = new Mock<IPizzaOven>(MockBehavior.Strict);
 
         recipeService.Setup(x => x.GetPizzaRecipes(order))
@@ -60,7 +61,7 @@ public class OrderingServiceTests
         pizzaOven.Setup(x => x.PreparePizzas(prepareOrders, returnedStock))
             .ReturnsAsync(pizzas);
 
-        var service = GetService(stockService.Object, recipeService.Object, pizzaOven.Object);
+        var service = GetService(stockService.Object, recipeService.Object, menuService.Object, pizzaOven.Object);
 
         // Act
         var actual = await service.HandlePizzaOrder(order);
@@ -90,6 +91,7 @@ public class OrderingServiceTests
 
         var stockService = new Mock<IStockService>(MockBehavior.Strict);
         var recipeService = new Mock<IRecipeService>(MockBehavior.Strict);
+        var menuService = new Mock<IMenuService>(MockBehavior.Strict);
         var pizzaOven = new Mock<IPizzaOven>(MockBehavior.Strict);
 
         recipeService.Setup(x => x.GetPizzaRecipes(order))
@@ -97,7 +99,7 @@ public class OrderingServiceTests
         stockService.Setup(x => x.HasInsufficientStock(order, recipes))
             .ReturnsAsync(true);
 
-        var service = GetService(stockService.Object, recipeService.Object, pizzaOven.Object);
+        var service = GetService(stockService.Object, recipeService.Object, menuService.Object, pizzaOven.Object);
 
         // Act
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => service.HandlePizzaOrder(order));
@@ -123,6 +125,7 @@ public class OrderingServiceTests
 
         var stockService = new Mock<IStockService>(MockBehavior.Strict);
         var recipeService = new Mock<IRecipeService>(MockBehavior.Strict);
+        var menuService = new Mock<IMenuService>(MockBehavior.Strict);
         var pizzaOven = new Mock<IPizzaOven>(MockBehavior.Strict);
 
         recipeService.Setup(x => x.GetPizzaRecipes(order))
@@ -132,7 +135,7 @@ public class OrderingServiceTests
         stockService.Setup(x => x.GetStock(order, recipes))
             .ReturnsAsync(returnedStock);
 
-        var service = GetService(stockService.Object, recipeService.Object, pizzaOven.Object);
+        var service = GetService(stockService.Object, recipeService.Object, menuService.Object, pizzaOven.Object);
 
         // Act
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => service.HandlePizzaOrder(order));
