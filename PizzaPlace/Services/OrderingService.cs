@@ -23,7 +23,9 @@ public class OrderingService(
             .Select(x => new PizzaPrepareOrder(GetPizzaRecipe(x.Key, recipes), x.Aggregate(0, (total, request) => total + request.Amount)))
             .ToComparableList();
 
-        return await pizzaOven.PreparePizzas(prepareOrder, stock);
+        var pizzas = await pizzaOven.PreparePizzas(prepareOrder, stock);
+        Console.WriteLine("An order finished");
+        return pizzas;
 
         PizzaRecipeDto GetPizzaRecipe(PizzaRecipeType pizzaType, ComparableList<PizzaRecipeDto> recipes) =>
             recipes.FirstOrDefault(x => x.RecipeType == pizzaType) ??

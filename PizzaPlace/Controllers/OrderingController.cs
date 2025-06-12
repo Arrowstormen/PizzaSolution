@@ -11,9 +11,7 @@ public class OrderingController(
     [HttpPost]
     public async Task<IActionResult> PlacePizzaOrder([FromBody] PizzaOrder pizzaOrder)
     {
-        return Ok(new
-        {
-            pizzas = await orderingService.HandlePizzaOrder(pizzaOrder),
-        });
+        orderingService.HandlePizzaOrder(pizzaOrder);
+        return Ok();
     }
 }
