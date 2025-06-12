@@ -18,9 +18,9 @@ public class StockRepository : IStockRepository
 
     public async Task<StockDto> AddToStock(StockDto stock)
     {
-        var entity = await _context.Stock.Include(s => s.StockType == stock.StockType.ToString()).FirstOrDefaultAsync();
+        var entity = await _context.Stock.FirstOrDefaultAsync(s => s.StockType == stock.StockType.ToString());
 
-        if (entity == null) 
+        if (entity == null)
         {
             entity = new Stock
             {
@@ -41,14 +41,33 @@ public class StockRepository : IStockRepository
     }
     public async Task<StockDto> GetStock(StockType stockType)
     {
-        var entity = await _context.Stock.Include(s => s.StockType == stockType.ToString()).FirstOrDefaultAsync();
+        var entity = await _context.Stock.FirstOrDefaultAsync(s => s.StockType == stockType.ToString());
         if (entity == null)
         {
             return new StockDto(stockType, 0);
         }
 
         return new StockDto(stockType, entity.Amount);
-        
+
     }
-    public Task<StockDto> TakeStock(StockType stockType, int amount) => throw new NotImplementedException("A real repository must be implemented.");
+    public async Task<StockDto> TakeStock(StockType stockType, int amount)
+    {
+        var entity = await _context.Stock.FirstOrDefaultAsync(s => s.StockType == stockType.ToString());
+
+        if (entity == null)
+        {
+            throw new Exception("StockType does not exist");
+        }
+
+        if (entity.Amount < amount)
+        {
+            throw new Exception("Not enough stock");
+        }
+
+        entity.Amount = entity.Amount - amount;
+        await _context.SaveChangesAsync();
+
+        var takenStock = new StockDto(stockType, amount);
+        return takenStock;
+    }
 }

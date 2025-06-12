@@ -14,6 +14,7 @@ namespace PizzaPlace.Data
         {
             optionsBuilder.UseSqlite("Data Source=pizzadb.db");
         }
+
     }
 }
 

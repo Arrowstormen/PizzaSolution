@@ -40,8 +40,9 @@ using (var context = new PizzaContext())
 var services = builder.Services;
 services.AddSingleton(TimeProvider.System);
 
-services.AddTransient<IStockRepository, FakeStockRepository>();
-services.AddTransient<IRecipeRepository, FakeRecipeRepository>();
+services.AddTransient<IPizzaContext, PizzaContext>();
+services.AddTransient<IStockRepository, StockRepository>();
+services.AddTransient<IRecipeRepository, RecipeRepository>();
 
 services.AddTransient<IPizzaOven, NormalPizzaOven>();
 services.AddTransient<IPizzaOven, AssemblyLinePizzaOven>();
