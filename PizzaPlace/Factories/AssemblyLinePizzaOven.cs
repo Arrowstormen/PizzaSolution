@@ -22,6 +22,7 @@ public class AssemblyLinePizzaOven(TimeProvider timeProvider) : PizzaOven(timePr
 
     protected override void PlanPizzaMaking(IEnumerable<(PizzaRecipeDto Recipe, Guid Guid)> recipeOrders)
     {
+        recipeOrders = recipeOrders.OrderBy(x => x.Recipe.RecipeType);
         foreach (var (recipe, orderGuid) in recipeOrders)
         {
             _pizzaQueue.Enqueue((MakePizza(recipe), orderGuid));
