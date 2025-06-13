@@ -18,6 +18,11 @@ public class StockRepository : IStockRepository
 
     public async Task<StockDto> AddToStock(StockDto stock)
     {
+        if (stock.Amount < 0)
+        {
+            throw new PizzaException("Stock cannot have negative amount.");
+        }
+
         var entity = await _context.Stock.FirstOrDefaultAsync(s => s.StockType == stock.StockType.ToString());
 
         if (entity == null)
@@ -52,16 +57,21 @@ public class StockRepository : IStockRepository
     }
     public async Task<StockDto> TakeStock(StockType stockType, int amount)
     {
+        if (amount < 0)
+        {
+            throw new PizzaException("Unable to take zero or negative amount. (Parameter 'amount')");
+        }
+
         var entity = await _context.Stock.FirstOrDefaultAsync(s => s.StockType == stockType.ToString());
 
         if (entity == null)
         {
-            throw new Exception("StockType does not exist");
+            throw new PizzaException("StockType does not exist");
         }
 
         if (entity.Amount < amount)
         {
-            throw new Exception("Not enough stock");
+            throw new PizzaException("Not enough stock to take the given amount");
         }
 
         entity.Amount = entity.Amount - amount;

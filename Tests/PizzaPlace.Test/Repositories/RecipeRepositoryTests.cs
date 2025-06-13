@@ -1,4 +1,6 @@
-﻿using PizzaPlace.Models;
+﻿using Moq.EntityFrameworkCore;
+using PizzaPlace.Data;
+using PizzaPlace.Models;
 using PizzaPlace.Models.Types;
 using PizzaPlace.Repositories;
 
@@ -7,7 +9,7 @@ namespace PizzaPlace.Test.Repositories;
 [TestClass]
 public class RecipeRepositoryTests
 {
-    private static IRecipeRepository GetRecipeRepository() => new FakeRecipeRepository();
+    private static IRecipeRepository GetRecipeRepository(IPizzaContext pizzaContext) => new RecipeRepository(pizzaContext);
 
     private static ComparableList<StockDto> GetStandardIngredients() =>
     [
@@ -26,7 +28,9 @@ public class RecipeRepositoryTests
             return;
 
         var recipe = new PizzaRecipeDto(PizzaRecipeType.StandardPizza, GetStandardIngredients(), StandardCookingTime);
-        var repository = GetRecipeRepository();
+        var pizzaContext = new Mock<IPizzaContext>();
+        pizzaContext.Setup(x => x.Recipes).ReturnsDbSet([]);
+        var repository = GetRecipeRepository(pizzaContext.Object);
 
         // Act
         var actual = await repository.AddRecipe(recipe);
@@ -42,7 +46,9 @@ public class RecipeRepositoryTests
         // Arrange
         await AddRecipe();
         var recipe = new PizzaRecipeDto(PizzaRecipeType.StandardPizza, [new StockDto(StockType.UnicornDust, 123), new StockDto(StockType.Anchovies, 1)], StandardCookingTime);
-        var repository = GetRecipeRepository();
+        var pizzaContext = new Mock<IPizzaContext>();
+        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
+        var repository = GetRecipeRepository(pizzaContext.Object);
 
         // Act
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => repository.AddRecipe(recipe));
@@ -58,7 +64,9 @@ public class RecipeRepositoryTests
         var pizzaType = PizzaRecipeType.StandardPizza;
         await AddRecipe();
         var expected = new PizzaRecipeDto(pizzaType, GetStandardIngredients(), StandardCookingTime, StandardRecipeId);
-        var repository = GetRecipeRepository();
+        var pizzaContext = new Mock<IPizzaContext>();
+        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
+        var repository = GetRecipeRepository(pizzaContext.Object);
 
         // Act
         var actual = await repository.GetRecipe(pizzaType);
@@ -72,7 +80,9 @@ public class RecipeRepositoryTests
     {
         // Arrange
         var pizzaType = PizzaRecipeType.ExtremelyTastyPizza;
-        var repository = GetRecipeRepository();
+        var pizzaContext = new Mock<IPizzaContext>();
+        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
+        var repository = GetRecipeRepository(pizzaContext.Object);
 
         // Act
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => repository.GetRecipe(pizzaType));
