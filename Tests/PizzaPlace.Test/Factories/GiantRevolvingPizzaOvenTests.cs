@@ -89,6 +89,7 @@ public class GiantRevolvingPizzaOvenTests
 
         // Act
         var pizzasTask = oven.PreparePizzas(order, stock);
+        await Task.Delay(1); // It's dumb, but it works.
         timeProvider.PassTimeInMinuteIntervals(expectedTime - 1);
         var firstCheck = pizzasTask.IsCompleted;
         timeProvider.PassTimeInMinuteIntervals(1);
