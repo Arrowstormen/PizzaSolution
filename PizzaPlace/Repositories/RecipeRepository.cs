@@ -56,8 +56,9 @@ public class RecipeRepository : IRecipeRepository
 
         if (entity == null)
         {
-            throw new Exception("No such recipe");
+            throw new PizzaException("Recipe does not exists of type " + recipeType.ToString() + ".");
         }
+
 
         var ingredients = new ComparableList<StockDto>();
         foreach(Ingredient ingredient in entity.Ingredients)
@@ -69,7 +70,7 @@ public class RecipeRepository : IRecipeRepository
             ingredients.Add(stockDto);
         }
 
-        var recipeDto = new PizzaRecipeDto(recipeType, ingredients, entity.CookingTimeMinutes);
+        var recipeDto = new PizzaRecipeDto(recipeType, ingredients, entity.CookingTimeMinutes, Id:entity.Id);
         return recipeDto;
     }
 }

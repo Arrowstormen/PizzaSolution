@@ -43,9 +43,8 @@ public class StockRepositoryTests
         var stock2 = new StockDto(StockType.UnicornDust, secondAddedAmount);
         var stockEntity1 = new Stock{
             StockType = StockType.UnicornDust.ToString(),
-            Amount = addedAmount};
+            Amount = 0};
         var pizzaContext = new Mock<IPizzaContext>();
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
         pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
         var repository = GetStockRepository(pizzaContext.Object);
 
@@ -101,17 +100,8 @@ public class StockRepositoryTests
             StockType = StockType.GenericSpices.ToString(),
             Amount = 123
         };
-        var stockEntity2 = new Stock
-        {
-            StockType = StockType.GenericSpices.ToString(),
-            Amount = 123+addedAmount
-        };
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
         pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity2]);
         var repository = GetStockRepository(pizzaContext.Object);
-        await repository.AddToStock(new StockDto(stockType, 123)); // Ensure the stock type is added.
         var startStock = await repository.GetStock(stockType);
         var expected = startStock with { Amount = startStock.Amount + addedAmount };
 
@@ -135,10 +125,8 @@ public class StockRepositoryTests
             StockType = StockType.FermentedDough.ToString(),
             Amount = amount +5
         };
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
         pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
         var repository = GetStockRepository(pizzaContext.Object);
-        await repository.AddToStock(new StockDto(stockType, amount + 5)); // Ensure stock is present.
         var expected = new StockDto(stockType, amount);
 
         // Act
@@ -160,10 +148,7 @@ public class StockRepositoryTests
             StockType = StockType.FermentedDough.ToString(),
             Amount = 5
         };
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
-        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
         var repository = GetStockRepository(pizzaContext.Object);
-        await repository.AddToStock(new StockDto(stockType, 5)); // Ensure stock is present.
 
         // Act
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => repository.TakeStock(stockType, amount));
@@ -183,10 +168,8 @@ public class StockRepositoryTests
             StockType = StockType.FermentedDough.ToString(),
             Amount = 5
         };
-        //pizzaContext.Setup(x => x.Stock).ReturnsDbSet([]);
         pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
         var repository = GetStockRepository(pizzaContext.Object);
-       // await repository.AddToStock(new StockDto(stockType, 5)); // Ensure stock is present.
         var startStock = await repository.GetStock(stockType);
         var amount = startStock.Amount + 1;
 
@@ -203,9 +186,14 @@ public class StockRepositoryTests
         // Arrange
         var stockType = StockType.FermentedDough;
         var amount = 7;
-        var pizzaContext = new Mock<IPizzaContext>(MockBehavior.Strict);
+        var pizzaContext = new Mock<IPizzaContext>();
+        var stockEntity1 = new Stock
+        {
+            StockType = StockType.FermentedDough.ToString(),
+            Amount = 8 + amount
+        };
+        pizzaContext.Setup(x => x.Stock).ReturnsDbSet([stockEntity1]);
         var repository = GetStockRepository(pizzaContext.Object);
-        await repository.AddToStock(new StockDto(stockType, amount + 8)); // Ensure stock is present.
         var startStock = await repository.GetStock(stockType);
         var expected = startStock with { Amount = startStock.Amount - amount };
 

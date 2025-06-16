@@ -71,7 +71,7 @@ public class StockRepository : IStockRepository
 
         if (entity.Amount < amount)
         {
-            throw new PizzaException("Not enough stock to take the given amount");
+            throw new PizzaException("Not enough stock to take the given amount.");
         }
 
         entity.Amount = entity.Amount - amount;
