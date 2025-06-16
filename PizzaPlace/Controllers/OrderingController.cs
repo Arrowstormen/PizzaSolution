@@ -12,7 +12,7 @@ public class OrderingController(
     public async Task<IActionResult> PlacePizzaOrder([FromBody] PizzaOrder pizzaOrder)
     {
         orderingService.HandlePizzaOrder(pizzaOrder);
-        var result = (orderingService.GetOrderCookingTime(pizzaOrder), orderingService.GetOrderPrice(pizzaOrder));
+        var result = (orderingService.GetOrderCookingTime(pizzaOrder), orderingService.GetOrderPrice(pizzaOrder, DateTimeOffset.Now));
         return Ok(result);
     }
 }

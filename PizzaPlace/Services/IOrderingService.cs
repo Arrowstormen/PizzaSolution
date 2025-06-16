@@ -8,5 +8,5 @@ public interface IOrderingService
     Task<IEnumerable<Pizza>> HandlePizzaOrder(PizzaOrder order);
 
     Task<int> GetOrderCookingTime(PizzaOrder order);
-    double GetOrderPrice(PizzaOrder order);
+    double GetOrderPrice(PizzaOrder order, DateTimeOffset time);
 }

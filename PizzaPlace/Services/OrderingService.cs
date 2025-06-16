@@ -41,6 +41,7 @@ public class OrderingService(
     {
         var message = "An order consisting of ";
         var multiples = "";
+        var count = 1;
         foreach (PizzaAmount pizzaAmount in order.RequestedOrder)
         {
             if (pizzaAmount.Amount > 1)
@@ -50,10 +51,20 @@ public class OrderingService(
             {
                 multiples = "";
             }
+            if (count == order.RequestedOrder.Count)
+            {
+                if (!(count == 1)) 
+                {
+                    message += "and ";
+                }
+                message += pizzaAmount.Amount + " " + pizzaAmount.PizzaType.ToString() + multiples + " finished";
+            }
+            else
+            {
                 message += pizzaAmount.Amount + " " + pizzaAmount.PizzaType.ToString() + multiples + ", ";
+                count++;
+            }
         }
-        message.Remove(message.Length - 2);
-        message += "finished";
         return message;
     }
 
@@ -68,10 +79,10 @@ public class OrderingService(
         return time;
    }
 
-    public double GetOrderPrice(PizzaOrder order)
+    public double GetOrderPrice(PizzaOrder order, DateTimeOffset time)
     {
         var totalPrice = 0.0;
-        var menu = menuService.GetMenu(DateTimeOffset.Now);
+        var menu = menuService.GetMenu(time);
         foreach (PizzaAmount pizzaAmount in order.RequestedOrder)
         {
             var menuItem = menu.Items.Where(p => p.PizzaType == pizzaAmount.PizzaType).FirstOrDefault();
