@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using PizzaPlace.Consoles;
 using PizzaPlace.Factories;
 using PizzaPlace.Models;
 using PizzaPlace.Models.Types;
@@ -11,6 +12,7 @@ public class OrderingService(
     IStockService stockService,
     IRecipeService recipeService,
     IMenuService menuService,
+    IConsole Console,
     IPizzaOven pizzaOven) : IOrderingService
 {
     public async Task<IEnumerable<Pizza>> HandlePizzaOrder(PizzaOrder order)
