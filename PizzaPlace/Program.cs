@@ -5,6 +5,7 @@ using PizzaPlace.Factories;
 using PizzaPlace.Repositories;
 using PizzaPlace.Services;
 using Microsoft.EntityFrameworkCore;
+using PizzaPlace.Consoles;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,8 @@ services.AddTransient<IStockService, StockService>();
 services.AddTransient<IRecipeService, RecipeService>();
 services.AddTransient<IOrderingService, OrderingService>();
 services.AddTransient<IMenuService, MenuService>();
+
+services.AddTransient<IConsole, StandardConsole>();
 
 var app = builder.Build();
 
