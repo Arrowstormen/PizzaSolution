@@ -56,7 +56,7 @@ public class RecipeRepository : IRecipeRepository
 
         if (entity == null)
         {
-            throw new PizzaException("Recipe does not exists of type " + recipeType.ToString() + ".");
+            throw new PizzaException("Recipe does not exist of type " + recipeType.ToString() + ".");
         }
 
 

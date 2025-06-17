@@ -122,6 +122,6 @@ public class RecipeRepositoryTests
         var ex = await Assert.ThrowsExceptionAsync<PizzaException>(() => repository.GetRecipe(pizzaType));
 
         // Assert
-        Assert.AreEqual("Recipe does not exists of type ExtremelyTastyPizza.", ex.Message);
+        Assert.AreEqual("Recipe does not exist of type ExtremelyTastyPizza.", ex.Message);
     }
 }
